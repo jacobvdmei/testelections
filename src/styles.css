@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 20px;
+  padding: 0;
+}
+
+#wrapper {
+  width: 800px;
+  margin: 0 auto 0 auto;
+}
+
+.usa-map {
+/*  width: 800px;*/
+}
+
+.usa-state:hover{
+}
+
+.progress-bar.bg-success {
+  background-color:#3b4cc0 !important;
+}
+.progress-bar.bg-warning {
+  background-color:#ced2ef !important;
+}
+.progress-bar.bg-info {
+  background-color:#b3b3b3 !important;
+}
+.progress-bar.bg-danger {
+  background-color:#ecc0c9 !important;
+}
+.progress-bar.bg-primary {
+  background-color:#b40426 !important;
+}
+
+.progress-section, .button-section{
+  margin-top:20px;
+}
+
+.col-sum-dem {
+  text-align:left;
+}
+
+.col-sum-dem p {
+  font-weight:bold;
+  color:#3b4cc0;
+}
+
+.col-sum-rep {
+  text-align:right;
+}
+
+.col-sum-rep p {
+  font-weight:bold;
+  color:#b40426;
+}
+
+.alert{
+  font-size:12px;
+  padding:5px 10px 5px 10px;
+}
+
+.stateList {
+  font-size: 12px;
+}
+
+.stateList li {
+  list-style-type: square;
+}
+
+.stateList li:hover {
+  cursor:pointer;
+}
+
+.stateList li::marker {
+  font-size:24px;
+}
+
+.stateList li.swing::marker {
+  color:#b3b3b3;
+}
+
+.stateList li.certDem::marker {
+  color:#3b4cc0;
+}
+
+.stateList li.certRep::marker {
+  color:#b40426;
+}
+
+.stateList li.probDem::marker {
+  color:#ced2ef;
+}
+
+.stateList li.probRep::marker {
+  color:#ecc0c9;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
