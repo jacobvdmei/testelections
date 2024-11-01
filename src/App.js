@@ -125,6 +125,7 @@ export default function App() {
   // };
 
   const initialPreferences = JSON.parse(process.env.REACT_APP_INITPREF);
+  console.log(process.env.REACT_APP_INITPREF);
 
   const stateNames = {
     AL: 'Alabama',
