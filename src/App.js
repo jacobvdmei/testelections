@@ -499,7 +499,7 @@ export default function App() {
     <>
       <Container>
         <Row>
-          <Col lg={8}>
+          <Col sm={12} lg={8}>
             <Row>
               <Col>
                 <h3>{hoveredInfo}</h3>
@@ -539,7 +539,7 @@ export default function App() {
               </Col>
             </Row>
           </Col>
-          <Col lg={4}>
+          <Col sm={12} lg={4}>
             <Tabs
               defaultActiveKey="kra"
               id="uncontrolled-tab-example"
@@ -556,10 +556,10 @@ export default function App() {
                 </Row>
                 <hr/>
                 <Row>
-                  <Col lg={6}>
+                  <Col sm={6} lg={6}>
                     {getStateList('dem')}
                   </Col>
-                  <Col lg={6}>
+                  <Col sm={6} lg={6}>
                     {getStateList('rep')}
                   </Col>
                 </Row>
