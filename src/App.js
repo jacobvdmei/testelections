@@ -536,9 +536,6 @@ export default function App() {
                   <Button variant="outline-warning" onClick={undo} disabled={checkDisabled('undo')}>Undo</Button>
                   <Button variant="outline-success" onClick={redo} disabled={checkDisabled('redo')}>Redo</Button>
                 </ButtonGroup>
-                <Button variant="primary" onClick={() => setModalShow(true)}>
-                  Launch vertically centered modal
-                </Button>
               </Col>
             </Row>
           </Col>
