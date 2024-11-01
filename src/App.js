@@ -4,6 +4,7 @@ import $ from 'jquery';
 
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -176,9 +177,12 @@ export default function App() {
     WY: 'Wyoming'
   };
 
-  const [statePreferences, setStatePreferences] = useState(initialPreferences);
+  const [history, setHistory] = useState([initialPreferences]);
+  const [currentPosition, setCurrentPosition] = useState(0);
+  const statePreferences = history[currentPosition];
+  // const [statePreferences, setStatePreferences] = useState(initialPreferences);
 
-  const [hoveredInfo, setHoveredInfo] = useState('US Elections');
+  const [hoveredInfo, setHoveredInfo] = useState('US Elections 2024');
   
   const electors = {
     AL: 9,
@@ -248,6 +252,18 @@ export default function App() {
 
     return settings;
   }, [statePreferences]);
+
+  const checkDisabled = (buttonType) => {
+    if ((buttonType === 'reset' || buttonType === 'undo') && currentPosition === 0)
+    {
+      return true;
+    }
+    if (buttonType === 'redo' && currentPosition === (history.length - 1))
+    {
+      return true;
+    }
+    return false;
+  };
 
   const getKeyRaceAlerts = () => {
     const alerts = [];
@@ -347,18 +363,26 @@ export default function App() {
     switchPreference(state);
   };
 
-  const handleClickStateLi = (abbr) => {
-    console.log(abbr);
-  };
-
   const handleMouseOver = (e) => {
     if ($(e.target).hasClass('usa-state')) {
       showStateInfo(e.target.dataset.name);
-    };
+    }
+    else {
+      setHoveredInfo('US Elections 2024');
+    }
+  };
+
+  const redo = () => {
+    if (currentPosition < (history.length - 1))
+    {
+      setCurrentPosition(currentPosition + 1);
+    }
   };
 
   const resetStates = () => {
-    setStatePreferences(initialPreferences);
+    setHistory([initialPreferences]);
+    setCurrentPosition(0);
+    // setStatePreferences(initialPreferences);
   };
 
   const showStateInfo = (state) => {
@@ -388,21 +412,65 @@ export default function App() {
     if (initialPreferences[state] != 1 && initialPreferences[state] != 2)
     {
       const currentPreference = statePreferences[state];
+      const pollPreference = pollPreferences[state];
       let newPreference;
 
-      if(currentPreference === 1)
+      if (pollPreference === 0)
       {
-        newPreference = 2;
+        if (currentPreference === 0)
+        {
+          newPreference = 1;
+        }
+        else if (currentPreference === 1)
+        {
+          newPreference = 2;
+        }
+        else { // currentPreference === 2
+          newPreference = 0;
+        }
       }
-      else if(currentPreference === 2)
+      else if (pollPreference === 3)
       {
-        newPreference = initialPreferences[state];
+        if (currentPreference === 3)
+        {
+          newPreference = 1;
+        }
+        else if (currentPreference === 1)
+        {
+          newPreference = 2;
+        }
+        else { // currentPreference === 2
+          newPreference = 3;
+        }
       }
-      else {
-        newPreference = 1;
+      else // pollPreference === 4
+      {
+        if (currentPreference === 4)
+        {
+          newPreference = 2;
+        }
+        else if (currentPreference === 2)
+        {
+          newPreference = 1;
+        }
+        else { // currentPreference === 1
+          newPreference = 4;
+        }
       }
 
-      setStatePreferences({...statePreferences, [state]: newPreference});
+      // const currentPreferences = history[currentPosition].slice();
+      const newPreferences = {...history[currentPosition], [state]: newPreference};
+      const nextHistory = [...history.slice(0, currentPosition + 1), newPreferences];
+      setHistory(nextHistory);
+      setCurrentPosition(nextHistory.length - 1);
+      // setStatePreferences({...statePreferences, [state]: newPreference});
+    }
+  };
+
+  const undo = () => {
+    if (currentPosition > 0)
+    {
+      setCurrentPosition(currentPosition - 1);
     }
   };
 
@@ -440,8 +508,12 @@ export default function App() {
             </Col>
           </Row>
           <Row className="button-section">
-            <Col>
-              <Button variant="outline-warning" onClick={resetStates}>Reset staten</Button>
+            <Col lg={6}>
+              <ButtonGroup >
+              <Button variant="outline-danger" onClick={resetStates} disabled={checkDisabled('reset')}>Reset</Button>
+              <Button variant="outline-warning" onClick={undo} disabled={checkDisabled('undo')}>Undo</Button>
+              <Button variant="outline-success" onClick={redo} disabled={checkDisabled('redo')}>Redo</Button>
+              </ButtonGroup>
             </Col>
           </Row>
         </Col>
