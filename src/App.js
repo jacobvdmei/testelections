@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Modal from 'react-bootstrap/Modal';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
@@ -177,6 +178,8 @@ export default function App() {
     WY: 'Wyoming'
   };
 
+  const [modalShow, setModalShow] = useState(false);
+  const [presidentName, setPresidentName] = useState(null);
   const [history, setHistory] = useState([initialPreferences]);
   const [currentPosition, setCurrentPosition] = useState(0);
   const statePreferences = history[currentPosition];
@@ -263,6 +266,23 @@ export default function App() {
       return true;
     }
     return false;
+  };
+
+  const checkPresident = (state, newPreference) => {
+    if (newPreference === 1 && (getPartyElectors(1) + electors[state]) >= 270)
+    {
+      setPresidentName('Kamala D. Harris');
+      setModalShow(true);
+    }
+    else if (newPreference === 2 && (getPartyElectors(2) + electors[state]) >= 270)
+    {
+      setPresidentName('Donald J. Trump');
+      setModalShow(true);
+    }
+    else {
+      setPresidentName(null);
+      setModalShow(false);
+    }
   };
 
   const getKeyRaceAlerts = () => {
@@ -463,6 +483,7 @@ export default function App() {
       const nextHistory = [...history.slice(0, currentPosition + 1), newPreferences];
       setHistory(nextHistory);
       setCurrentPosition(nextHistory.length - 1);
+      checkPresident(state, newPreference);
       // setStatePreferences({...statePreferences, [state]: newPreference});
     }
   };
@@ -475,76 +496,106 @@ export default function App() {
   };
 
   return (
-    <Container>
-      <Row>
-        <Col lg={8}>
-          <Row>
-            <Col>
-              <h3>{hoveredInfo}</h3>
-            </Col>
-          </Row>
-          <Row>
-            <Col onMouseOver={handleMouseOver}>
-              <USAMap customStates={mapSettings} />
-            </Col>
-          </Row>
-          <Row className="progress-section">
-            <Col onMouseOver={handleMouseOver}>
-              <ProgressBar>
-                <ProgressBar variant="success" now={getPartyPercentage(1)} key={1} label={getPartyElectors(1)} />
-                <ProgressBar variant="warning" now={getPartyPercentage(3)} key={2} label={getPartyElectors(3)} />
-                <ProgressBar variant="info" now={getPartyPercentage(0)} key={3} label={getPartyElectors(0)} />
-                <ProgressBar variant="danger" now={getPartyPercentage(4)} key={4} label={getPartyElectors(4)} />
-                <ProgressBar variant="primary" now={getPartyPercentage(2)} key={5} label={getPartyElectors(2)} />
-              </ProgressBar>
-            </Col>
-          </Row>
-          <Row>
-            <Col className="col-sum-dem">
-             <p>{getPartyElectors(1) + getPartyElectors(3)}</p>
-            </Col>
-            <Col className="col-sum-rep">
-             <p>{getPartyElectors(2) + getPartyElectors(4)}</p>
-            </Col>
-          </Row>
-          <Row className="button-section">
-            <Col lg={6}>
-              <ButtonGroup >
-              <Button variant="outline-danger" onClick={resetStates} disabled={checkDisabled('reset')}>Reset</Button>
-              <Button variant="outline-warning" onClick={undo} disabled={checkDisabled('undo')}>Undo</Button>
-              <Button variant="outline-success" onClick={redo} disabled={checkDisabled('redo')}>Redo</Button>
-              </ButtonGroup>
-            </Col>
-          </Row>
-        </Col>
-        <Col lg={4}>
-          <Tabs
-            defaultActiveKey="kra"
-            id="uncontrolled-tab-example"
-            className="mb-3"
-          >
-            <Tab eventKey="kra" title="Key Race Alerts">
-              {getKeyRaceAlerts()}
-            </Tab>
-            <Tab eventKey="statesOverview" title="Staten">
-              <Row>
-                <Col lg={12}>
-                  {getStateList('swing')}
-                </Col>
-              </Row>
-              <hr/>
-              <Row>
-                <Col lg={6}>
-                  {getStateList('dem')}
-                </Col>
-                <Col lg={6}>
-                  {getStateList('rep')}
-                </Col>
-              </Row>
-            </Tab>
-          </Tabs>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <Container>
+        <Row>
+          <Col lg={8}>
+            <Row>
+              <Col>
+                <h3>{hoveredInfo}</h3>
+              </Col>
+            </Row>
+            <Row>
+              <Col onMouseOver={handleMouseOver}>
+                <USAMap customStates={mapSettings} />
+              </Col>
+            </Row>
+            <Row className="progress-section">
+              <Col onMouseOver={handleMouseOver}>
+                <ProgressBar>
+                  <ProgressBar variant="success" now={getPartyPercentage(1)} key={1} label={getPartyElectors(1)} />
+                  <ProgressBar variant="warning" now={getPartyPercentage(3)} key={2} label={getPartyElectors(3)} />
+                  <ProgressBar variant="info" now={getPartyPercentage(0)} key={3} label={getPartyElectors(0)} />
+                  <ProgressBar variant="danger" now={getPartyPercentage(4)} key={4} label={getPartyElectors(4)} />
+                  <ProgressBar variant="primary" now={getPartyPercentage(2)} key={5} label={getPartyElectors(2)} />
+                </ProgressBar>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="col-sum-dem">
+               <p>{getPartyElectors(1) + getPartyElectors(3)}</p>
+              </Col>
+              <Col className="col-sum-rep">
+               <p>{getPartyElectors(2) + getPartyElectors(4)}</p>
+              </Col>
+            </Row>
+            <Row className="button-section">
+              <Col lg={6}>
+                <ButtonGroup >
+                  <Button variant="outline-danger" onClick={resetStates} disabled={checkDisabled('reset')}>Reset</Button>
+                  <Button variant="outline-warning" onClick={undo} disabled={checkDisabled('undo')}>Undo</Button>
+                  <Button variant="outline-success" onClick={redo} disabled={checkDisabled('redo')}>Redo</Button>
+                </ButtonGroup>
+                <Button variant="primary" onClick={() => setModalShow(true)}>
+                  Launch vertically centered modal
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+          <Col lg={4}>
+            <Tabs
+              defaultActiveKey="kra"
+              id="uncontrolled-tab-example"
+              className="mb-3"
+            >
+              <Tab eventKey="kra" title="Key Race Alerts">
+                {getKeyRaceAlerts()}
+              </Tab>
+              <Tab eventKey="statesOverview" title="Staten">
+                <Row>
+                  <Col lg={12}>
+                    {getStateList('swing')}
+                  </Col>
+                </Row>
+                <hr/>
+                <Row>
+                  <Col lg={6}>
+                    {getStateList('dem')}
+                  </Col>
+                  <Col lg={6}>
+                    {getStateList('rep')}
+                  </Col>
+                </Row>
+              </Tab>
+            </Tabs>
+          </Col>
+        </Row>
+      </Container>
+      <MyVerticallyCenteredModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        presidentName={presidentName}
+      />
+    </>
+  );
+}
+
+function MyVerticallyCenteredModal(props) {
+  return (
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter"  className="text-center">
+          NEW PRESIDENT ELECT
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="text-center">
+        <h1>{props.presidentName}</h1>
+      </Modal.Body>
+    </Modal>
   );
 }
