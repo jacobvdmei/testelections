@@ -4,8 +4,10 @@
 
 body {
   font-family: sans-serif;
+  background-color: #191919;
   margin: 20px;
   padding: 0;
+  color:#FFF;
 }
 
 #wrapper {

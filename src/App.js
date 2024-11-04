@@ -15,7 +15,6 @@ import Tabs from 'react-bootstrap/Tabs';
 
 export default function App() {
   const colors = ['#b3b3b3', '#3b4cc0', '#b40426', '#ced2ef', '#ecc0c9'];
-  console.log();
   const pollPreferences = {
     AL: 4,
     AK: 4, 
@@ -125,7 +124,6 @@ export default function App() {
   // };
 
   const initialPreferences = JSON.parse(process.env.REACT_APP_INITPREF);
-  console.log(process.env.REACT_APP_INITPREF);
 
   const stateNames = {
     AL: 'Alabama',
